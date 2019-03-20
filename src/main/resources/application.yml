@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+    
+#开发配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mmall
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  http:
+    multipart:
+      max-file-size: 10Mb  # 最大支持文件大小
+      max-request-size: 10Mb #最大支持请求大小
+ # redis:
+  #  database: 0
+  #  host: 192.168.74.128
+   # port: 6379
+   # password: 123456
+ 
+mybatis:
+  typeAliasesPackage: com.springboot.mmall.pojo
+  mapperLocations: classpath:mappers/*.xml
+  
+pagehelper:
+  propertyName: scott
