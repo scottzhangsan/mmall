@@ -149,4 +149,21 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="countUserByUsernameAndPassword" resultType="int">
+   select count(1) from mmall_user where username=#{username} and password=#{password}
+  </select>
+  
+  <select id="selectMmallUserByNameAndPassword" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from mmall_user
+    where username=#{username} and password=#{password}
+  </select>
+  
+  <select id="listMmallUser" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    from mmall_user
+  </select>
 </mapper>

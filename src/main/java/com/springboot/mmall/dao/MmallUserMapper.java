@@ -1,5 +1,9 @@
 package com.springboot.mmall.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.springboot.mmall.pojo.MmallUser;
 
 public interface MmallUserMapper {
@@ -14,4 +18,11 @@ public interface MmallUserMapper {
     int updateByPrimaryKeySelective(MmallUser record);
 
     int updateByPrimaryKey(MmallUser record);
+    //通过用户名和密码判断是否存在当前用户
+    int countUserByUsernameAndPassword(@Param("username")String username,@Param("password")String password) ;
+    //通过用户名和密码查询用户
+    MmallUser selectMmallUserByNameAndPassword(@Param("username")String username,@Param("password")String password);
+    //获取所有的用户信息
+    List<MmallUser> listMmallUser() ;
+    
 }
