@@ -151,7 +151,10 @@
   </update>
   
   <select id="countUserByUsernameAndPassword" resultType="int">
-   select count(1) from mmall_user where username=#{username} and password=#{password}
+   select count(1) from mmall_user where username=#{username} 
+   <if test="password != null">
+   and password=#{password}
+   </if>
   </select>
   
   <select id="selectMmallUserByNameAndPassword" resultMap="BaseResultMap">

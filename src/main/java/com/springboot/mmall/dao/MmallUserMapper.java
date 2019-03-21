@@ -25,4 +25,6 @@ public interface MmallUserMapper {
     //获取所有的用户信息
     List<MmallUser> listMmallUser() ;
     
+    
+    
 }
