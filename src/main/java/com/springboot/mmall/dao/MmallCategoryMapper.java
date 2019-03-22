@@ -1,5 +1,7 @@
 package com.springboot.mmall.dao;
 
+import java.util.List;
+
 import com.springboot.mmall.pojo.MmallCategory;
 
 public interface MmallCategoryMapper {
@@ -14,4 +16,6 @@ public interface MmallCategoryMapper {
     int updateByPrimaryKeySelective(MmallCategory record);
 
     int updateByPrimaryKey(MmallCategory record);
+    
+    List<MmallCategory> listByParentId(Integer parentId) ; //通过parentId查询品类信息
 }

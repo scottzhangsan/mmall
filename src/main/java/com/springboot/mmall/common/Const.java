@@ -1,4 +1,4 @@
-package com.springboot.mmall.controller;
+package com.springboot.mmall.common;
 /**
  * 
  * @author yzhang98

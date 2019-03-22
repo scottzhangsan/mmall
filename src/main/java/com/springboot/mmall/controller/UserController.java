@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.springboot.mmall.common.Const;
 import com.springboot.mmall.common.ServerResponse;
 import com.springboot.mmall.pojo.MmallUser;
 import com.springboot.mmall.service.IUserService;

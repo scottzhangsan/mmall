@@ -6,12 +6,13 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.springboot.mmall.common.Const;
 import com.springboot.mmall.common.ServerResponse;
 import com.springboot.mmall.common.TokenCache;
-import com.springboot.mmall.controller.Const;
 import com.springboot.mmall.dao.MmallUserMapper;
 import com.springboot.mmall.pojo.MmallUser;
 import com.springboot.mmall.util.BeanMapperUtil;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements IUserService {
 		PageInfo<MmallUser> Info = new PageInfo<MmallUser>(mmallUserMapper.listMmallUser()) ;
 		return ServerResponse.createBySuccess(Info) ;
 	}
-
+    @Transactional
 	public ServerResponse<String> register(MmallUserVo userVo) {
 		
 		int count = mmallUserMapper.countUserByUsernameAndPassword(userVo.getUsername(), null) ;
@@ -76,7 +77,7 @@ public class UserServiceImpl implements IUserService {
 		TokenCache.setKey("token_"+username, uuid);
 		return ServerResponse.createBySuccess(uuid);
 	}
-
+   @Transactional
 	public ServerResponse<String> resertPassword(String username, String newPassword, String token) {
 		String localToken = TokenCache.getValue("token_"+username) ;
 		//如果token为空，或者传递过来的token和缓存中不相同，返回token失效

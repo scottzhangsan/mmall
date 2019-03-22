@@ -3,14 +3,15 @@ package com.springboot.mmall.controller.backend;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.springboot.mmall.common.Const;
 import com.springboot.mmall.common.ServerResponse;
-import com.springboot.mmall.controller.Const;
 import com.springboot.mmall.pojo.MmallUser;
 import com.springboot.mmall.service.IUserService;
 
@@ -19,6 +20,7 @@ import com.springboot.mmall.service.IUserService;
  * @author yzhang98
  *
  */
+@Controller
 @RequestMapping("/manage/user")
 public class UserManagerController {
 	
@@ -43,7 +45,7 @@ public class UserManagerController {
 	
 	@ResponseBody
 	@RequestMapping(value="/list",method = RequestMethod.POST)
-	public ServerResponse<PageInfo<MmallUser>> listUser(@RequestParam(defaultValue = "1")Integer pageNum,@RequestParam(defaultValue="10")Integer pageSize){
+	public ServerResponse<PageInfo<MmallUser>> listUser(@RequestParam(defaultValue = "1")Integer pageNum,@RequestParam(defaultValue="10")Integer pageSize) {
 		return userService.listMmallUser(pageNum, pageSize);
 	}
 	
