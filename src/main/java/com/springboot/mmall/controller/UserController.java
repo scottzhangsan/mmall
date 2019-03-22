@@ -21,7 +21,7 @@ public class UserController {
 	@Autowired
 	private IUserService userService ;
 	@ResponseBody
-	@RequestMapping(value="/login",method = RequestMethod.POST)
+	@RequestMapping(value="/login")
 	public ServerResponse<MmallUser> login(String username,String password,HttpSession session){
 		ServerResponse<MmallUser> response = userService.login(username, password) ;
 		//如果登录成功才设置Session
@@ -49,8 +49,72 @@ public class UserController {
 	public ServerResponse<String> register(MmallUserVo userVo){
 		return userService.register(userVo) ;
 	}
+	/**
+	 * 获取用户信息
+	 * @param session
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="get_user_info")
+	public ServerResponse<MmallUser> getMmuserInfo(HttpSession session){
+		MmallUser user = (MmallUser)session.getAttribute(Const.CURRENT_USER) ;
+		if (user == null) {
+			return ServerResponse.createByErrorMessage("获取用户信息失败，用户未登陆") ;
+		}
+		
+		return ServerResponse.createBySuccess(user) ;
+		
+	}
 	
+	/**
+	 * 忘记密码
+	 * @param username
+	 * @return
+	 */
+	@RequestMapping("forget_get_question")
+	@ResponseBody
+	public ServerResponse<String> forgetQuestion(@RequestParam("username")String username){
+		return userService.getUserQuestion(username) ;
+	}
 	
+	/**检查问题答案
+	 * 
+	 * @param username
+	 * @param question
+	 * @param answer
+	 * @return
+	 */
+	@RequestMapping("forget_check_answer")
+	@ResponseBody
+	public ServerResponse<String> forgetCheckAnswer(@RequestParam("username")String username,@RequestParam("question")String question,@RequestParam("answer")String answer){
+		return userService.checkAnswer(username, question, answer);
+	}
+	
+	/**
+	 * 重置密码
+	 * @return
+	 */
+	@RequestMapping("forget_resert_password")
+	@ResponseBody
+	public ServerResponse<String> forgetResertPassword(String username,String newPassword,String token){
+		return userService.resertPassword(username, newPassword, token) ;
+	}
+	/**
+	 * 登录状态更新个人信息
+	 * @param vo
+	 * @param session
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("update_info")
+	public ServerResponse<String> updateUserInfo(MmallUserVo vo,HttpSession session){
+		MmallUser user = (MmallUser) session.getAttribute(Const.CURRENT_USER) ;
+		if (user == null ) {
+			return ServerResponse.createByErrorMessage("用户未登录") ;
+		}
+		
+		return userService.updateUserInfo(vo, user) ;
+	}
 	
 
 }

@@ -161,7 +161,11 @@
    select 
     <include refid="Base_Column_List" />
     from mmall_user
-    where username=#{username} and password=#{password}
+    where username=#{username} 
+    <if test="password != null">
+    and password=#{password}
+    </if>
+    
   </select>
   
   <select id="listMmallUser" resultMap="BaseResultMap">
@@ -169,4 +173,14 @@
     <include refid="Base_Column_List" />
     from mmall_user
   </select>
+  
+  <select id="countCheckAnswer" resultType="int">
+  select count(1) from mmall_user where username=#{username} and question=#{question} and answer=#{answer}
+  </select>
+  
+  <update id="updatePasswordByUsername">
+  update mmall_user set password=#{password} where username=#{username}
+  </update>
+  
+  
 </mapper>

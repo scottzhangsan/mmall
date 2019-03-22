@@ -24,7 +24,9 @@ public interface MmallUserMapper {
     MmallUser selectMmallUserByNameAndPassword(@Param("username")String username,@Param("password")String password);
     //获取所有的用户信息
     List<MmallUser> listMmallUser() ;
-    
-    
+    //检查答案
+    int countCheckAnswer(@Param("username")String username,@Param("question")String question,@Param("answer")String answer) ;
+    //修改密码
+    int updatePasswordByUsername(@Param("username")String username,@Param("password")String newPassword) ;
     
 }

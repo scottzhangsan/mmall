@@ -55,6 +55,13 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.3</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.7</version>
+		</dependency>
+
 		<!-- ID 加密 -->
 		<dependency>
 			<groupId>org.hashids</groupId>
@@ -69,9 +76,9 @@
 		</dependency>
 		<!-- redis -->
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 
 	</dependencies>
 	<build>

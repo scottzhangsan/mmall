@@ -13,4 +13,12 @@ public interface IUserService {
 	ServerResponse<PageInfo<MmallUser>> listMmallUser(int pageNum,int pageSize) ;
 	
 	ServerResponse<String> register(MmallUserVo userVo) ;
+	
+	ServerResponse<String> getUserQuestion(String username) ;
+	
+	ServerResponse<String> checkAnswer(String username,String question,String answer) ;
+	
+	ServerResponse<String> resertPassword(String username,String newPassword,String token);
+	
+	ServerResponse<String> updateUserInfo(MmallUserVo vo,MmallUser user) ;
 }
