@@ -31,12 +31,6 @@ public class UserController {
 		
 		return  response;
 	}
-	@ResponseBody
-	@RequestMapping(value="/list",method = RequestMethod.POST)
-	public ServerResponse<PageInfo<MmallUser>> listUser(@RequestParam(defaultValue = "1")Integer pageNum,@RequestParam(defaultValue="10")Integer pageSize){
-		return userService.listMmallUser(pageNum, pageSize);
-	}
-	
 	@RequestMapping(value="/logout",method=RequestMethod.GET)
 	@ResponseBody
 	public ServerResponse<String> logout(HttpSession session){
