@@ -11,7 +11,7 @@ public class Const {
 	public interface Role{  //运用接口起到分组的效果
 		int ROLE_CUSTOMER = 0 ; //普通用户
 		int ROLE_ADMIN = 1 ; //管理员
-	}
+	}	
 	
 
 }

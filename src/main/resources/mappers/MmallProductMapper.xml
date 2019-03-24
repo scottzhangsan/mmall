@@ -174,4 +174,28 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="listProduct" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from mmall_product
+  </select>
+  <select id="serachProduct" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from mmall_product
+    <where>
+    <if test="productName != null">
+    and name=#{productName}
+    </if>
+   
+    <if test="categoryIds !=null and categoryIds.size()>0">
+    and category_id in
+    <foreach collection="categoryIds" item="categoryId" open="(" close=")" separator=",">
+    #{categoryId}
+    </foreach> 
+    </if>
+    </where>
+  </select>
+  
+  
 </mapper>

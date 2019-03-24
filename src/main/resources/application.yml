@@ -25,3 +25,6 @@ mybatis:
   
 pagehelper:
   propertyName: scott
+  
+upload:
+   filePath: c:/upload

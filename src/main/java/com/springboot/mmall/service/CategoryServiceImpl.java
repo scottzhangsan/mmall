@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
 import com.springboot.mmall.common.ServerResponse;
 import com.springboot.mmall.dao.MmallCategoryMapper;
 import com.springboot.mmall.pojo.MmallCategory;
@@ -65,11 +66,22 @@ public class CategoryServiceImpl implements ICategoryService {
 	 *递归查询父节点下的所有的子节点
 	 */
 	@Override
-	public ServerResponse<Set<MmallCategory>> listDeepChildren(Integer parentId) {
+	public ServerResponse<List<Integer>> listDeepChildren(Integer parentId) {
 		Set<MmallCategory> set = new HashSet<>() ;
 		
-		return ServerResponse.createBySuccess(resursionQuery(parentId, set));
+		set = resursionQuery(parentId, set) ;
+		
+		List<Integer> list = Lists.newArrayList() ;
+		/**
+		 * java8流转换的应用
+		 */
+		if (CollectionUtils.isNotEmpty(set)) {
+			list = set.stream().mapToInt((e) ->e.getId()).boxed().collect(Collectors.toList()) ;
+		}
+		
+		return ServerResponse.createBySuccess(list);
 	}
+	
 	/**
 	 * 递归查询
 	 * @param parentId
@@ -86,7 +98,6 @@ public class CategoryServiceImpl implements ICategoryService {
 		set.add(category) ;
 		//查询当前节点的子节点
 		List<MmallCategory> categories = categoryMapper.listByParentId(category.getId());
-		set.addAll(categories) ;
 		//递归查询所有的子节点 ，当节点为空的时候结束递归查询
 		for (MmallCategory mmallCategory : categories) {
 			resursionQuery(mmallCategory.getId(), set) ;

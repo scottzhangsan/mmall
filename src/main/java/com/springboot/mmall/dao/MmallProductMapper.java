@@ -1,5 +1,9 @@
 package com.springboot.mmall.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.springboot.mmall.pojo.MmallProduct;
 
 public interface MmallProductMapper {
@@ -14,4 +18,9 @@ public interface MmallProductMapper {
     int updateByPrimaryKeySelective(MmallProduct record);
 
     int updateByPrimaryKey(MmallProduct record);
+    
+    List<MmallProduct> listProduct() ;
+    
+    
+    List<MmallProduct> serachProduct(@Param("productName")String productName,@Param("categoryIds")List<Integer> categoryIds) ;
 }

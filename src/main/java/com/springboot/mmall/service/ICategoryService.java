@@ -16,6 +16,6 @@ public interface ICategoryService {
 	//查询平级的子节点
 	ServerResponse<List<MmallCategory>> listParallerChildren(Integer parentId) ;
 	//递归查询节点下的所有的子节点
-	ServerResponse<Set<MmallCategory>> listDeepChildren(Integer parentId) ;
+	ServerResponse<List<Integer>> listDeepChildren(Integer parentId) ;
 
 }

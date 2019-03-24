@@ -60,7 +60,7 @@ public class CategoryManageController {
 	 * @return
 	 */
 	@RequestMapping("get_deep_category")
-	public ServerResponse<Set<MmallCategory>> getDeepCategory(@RequestParam(value="parentId",defaultValue="0")Integer parentId){
+	public ServerResponse<List<Integer>> getDeepCategory(@RequestParam(value="parentId",defaultValue="0")Integer parentId){
 		return categoryService.listDeepChildren(parentId) ;
 	}
 	
