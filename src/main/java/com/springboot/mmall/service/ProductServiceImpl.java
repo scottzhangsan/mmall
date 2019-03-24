@@ -127,4 +127,26 @@ public class ProductServiceImpl implements IProductService {
 		return ServerResponse.createBySuccessMessage("新增商品失败");
 	}
 
+	@Override
+	public ServerResponse<PageInfo<MmallProduct>> listByOrderPage(String productName, Integer categoryId, Integer pageNum,
+			Integer pageSize,String orderBy) {
+		List<Integer> list = Lists.newArrayList();
+
+		if (categoryId != null) {
+			list = categoryService.listDeepChildren(categoryId).getData();
+		}
+		PageHelper.startPage(pageNum, pageSize) ;
+		
+		if (StringUtils.isNotBlank(orderBy)) {
+			if (orderBy.contains("_")) {
+				String [] strings = orderBy.split("_") ;
+				
+				PageHelper.orderBy(strings[0]+" "+strings[1]);
+			}
+		}
+		
+		List<MmallProduct> list2 = productMapper.serachProduct(productName, list);
+		return ServerResponse.createBySuccess(new PageInfo<>(list2));
+	}
+
 }

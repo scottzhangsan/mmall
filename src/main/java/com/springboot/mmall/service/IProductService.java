@@ -1,5 +1,7 @@
 package com.springboot.mmall.service;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.github.pagehelper.PageInfo;
 import com.springboot.mmall.bo.MmallProductBo;
 import com.springboot.mmall.common.ServerResponse;
@@ -17,5 +19,8 @@ public interface IProductService {
     
     ServerResponse<String> saveProduct(Integer categoryId,String name,String subtitle,String mainImage,String subImages,
 			String detail,Double price,Integer stock,Integer status,Integer id) ;
+    
+    ServerResponse<PageInfo<MmallProduct>> listByOrderPage(String productName,Integer categoryId,
+	Integer pageNum,Integer pageSize,String orderBy);
 
 }
