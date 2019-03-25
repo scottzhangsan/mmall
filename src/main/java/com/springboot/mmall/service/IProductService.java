@@ -1,6 +1,5 @@
 package com.springboot.mmall.service;
 
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.github.pagehelper.PageInfo;
 import com.springboot.mmall.bo.MmallProductBo;
