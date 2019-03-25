@@ -30,7 +30,7 @@ public class FTPUtil {
         FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
         logger.info("开始连接ftp服务器");
         //remotePath是"img"，也就是传到ftp文件夹下面的img这个文件夹下
-        boolean result = ftpUtil.uploadFile("c:/img",fileList);
+        boolean result = ftpUtil.uploadFile("img",fileList);
         logger.info("ftp服务器,结束上传,上传结果:{}", result);
         return result;
     }
