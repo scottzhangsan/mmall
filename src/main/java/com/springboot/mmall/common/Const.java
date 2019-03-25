@@ -13,5 +13,12 @@ public class Const {
 		int ROLE_ADMIN = 1 ; //管理员
 	}	
 	
+	public interface Cart{
+		int isChecked = 1 ;
+		int notChecked = 0 ;
+		String LIMIT_NUM_SUCCESS ="LIMIT_NUM_SUCCESS" ;
+		String LIMIT_NUM_FAIL ="LIMIT_NUM__FAIL" ;
+	}
+	
 
 }

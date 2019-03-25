@@ -114,4 +114,33 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectCartByUserAndProduct" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from mmall_cart
+    where user_id = #{userId,jdbcType=INTEGER} and product_id=#{productId}
+  </select>
+  
+  <select id="listCartByUser" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from mmall_cart
+    where user_id = #{userId,jdbcType=INTEGER} 
+  </select>
+  
+  <delete id="deletProductByProductIdAndUser">
+  delete from mmall_cart 
+  <where>
+  <if test="userId != null">
+  and user_id=#{userId}
+  </if>
+  <if test="productIds !=null and productIds.size()>0">
+  and product_id in
+  <foreach collection="productIds" item="productId" open="(" close=")" separator=",">
+  #{productId}
+  </foreach>
+  </if>
+  </where>
+  </delete>
+  
 </mapper>
