@@ -27,9 +27,9 @@
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_shipping
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} and user_id =#{userId}
   </delete>
-  <insert id="insert" parameterType="com.springboot.mmall.pojo.MmallShipping" >
+  <insert id="insert" parameterType="com.springboot.mmall.pojo.MmallShipping" useGeneratedKeys ="true" keyProperty="id">
     insert into mmall_shipping (id, user_id, receiver_name, 
       receiver_phone, receiver_mobile, receiver_province, 
       receiver_city, receiver_district, receiver_address, 
@@ -157,7 +157,7 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} and user_id=#{userId}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.springboot.mmall.pojo.MmallShipping" >
     update mmall_shipping
