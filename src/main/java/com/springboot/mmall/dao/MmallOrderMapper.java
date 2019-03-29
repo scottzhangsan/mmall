@@ -1,5 +1,7 @@
 package com.springboot.mmall.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.springboot.mmall.pojo.MmallOrder;
 
 public interface MmallOrderMapper {
@@ -14,4 +16,6 @@ public interface MmallOrderMapper {
     int updateByPrimaryKeySelective(MmallOrder record);
 
     int updateByPrimaryKey(MmallOrder record);
+    
+    MmallOrder selectByOrderNoAndUserId(@Param("orderNo")String orderNo,@Param("userId")Integer userId);
 }
