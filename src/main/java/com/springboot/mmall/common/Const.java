@@ -20,5 +20,35 @@ public class Const {
 		String LIMIT_NUM_FAIL ="LIMIT_NUM__FAIL" ;
 	}
 	
+	public interface AlipayNotify{
+		
+		String NOTIFY_SUCCESS = "success" ;
+		String NOTIFY_FAILURE = "fail" ;
+		
+		String TRADE_SUCCESS = "TRADE_SUCCESS" ;
+	}
+	
+	public enum PayPlatform{
+		ALIPAY(1,"支付宝");
+		int code ;
+		String value ;
+		
+		private PayPlatform(int code, String value) {
+			this.code = code;
+			this.value = value;
+		}
+
+		public int getCode() {
+			return code;
+		}
+
+		public String getValue() {
+			return value;
+		}
+		
+		
+		
+	}
+	
 
 }

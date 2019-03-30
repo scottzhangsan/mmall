@@ -17,5 +17,7 @@ public interface MmallOrderMapper {
 
     int updateByPrimaryKey(MmallOrder record);
     
-    MmallOrder selectByOrderNoAndUserId(@Param("orderNo")String orderNo,@Param("userId")Integer userId);
+    MmallOrder selectByOrderNoAndUserId(@Param("orderNo")Long orderNo,@Param("userId")Integer userId);
+    //通过订单号查询订单
+    MmallOrder selectByOrderNo(Long order) ;
 }
