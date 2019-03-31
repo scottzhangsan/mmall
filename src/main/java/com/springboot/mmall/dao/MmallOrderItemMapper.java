@@ -20,4 +20,7 @@ public interface MmallOrderItemMapper {
     int updateByPrimaryKey(MmallOrderItem record);
     //通过订单号和用户ID查询订单信息
     List<MmallOrderItem> listOrderItemByOrderNoAndUserId(@Param("orderNo")Long orderNo,@Param("userId")Integer userId) ;
+    //批量插入订单详情
+    int batchInsertOrderItem(List<MmallOrderItem> items) ;
+
 }

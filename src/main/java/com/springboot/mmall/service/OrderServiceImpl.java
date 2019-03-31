@@ -7,12 +7,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
@@ -26,18 +29,26 @@ import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.springboot.mmall.Exception.MmallException;
 import com.springboot.mmall.common.Const;
 import com.springboot.mmall.common.OrderEnum;
 import com.springboot.mmall.common.ServerResponse;
+import com.springboot.mmall.dao.MmallCartMapper;
 import com.springboot.mmall.dao.MmallOrderItemMapper;
 import com.springboot.mmall.dao.MmallOrderMapper;
 import com.springboot.mmall.dao.MmallPayInfoMapper;
+import com.springboot.mmall.dao.MmallProductMapper;
+import com.springboot.mmall.pojo.MmallCart;
 import com.springboot.mmall.pojo.MmallOrder;
 import com.springboot.mmall.pojo.MmallOrderItem;
 import com.springboot.mmall.pojo.MmallPayInfo;
+import com.springboot.mmall.pojo.MmallProduct;
+import com.springboot.mmall.util.BeanMapperUtil;
 import com.springboot.mmall.util.BigDecimalUtil;
 import com.springboot.mmall.util.DateUtil;
 import com.springboot.mmall.util.FTPUtil;
+import com.springboot.mmall.vo.OrderItemVo;
+import com.springboot.mmall.vo.OrderVo;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -51,6 +62,10 @@ public class OrderServiceImpl implements IOrderService {
 	private MmallOrderItemMapper orderItemMapper;
 	@Autowired
 	private MmallPayInfoMapper payInfoMapper ;
+	@Autowired
+	private MmallCartMapper cartMapper ;
+	@Autowired
+	private MmallProductMapper productMapper ;
 
 	@Override
 	public ServerResponse<Map<String, String>> pay(Long orderNo, Integer userId) {
@@ -187,6 +202,7 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
+	@Transactional
 	public ServerResponse<String> saveAlipayInfo(Map<String, String> map) {
 		Long orderNo = Long.valueOf(map.get("out_trade_no"));
 		MmallOrder order = orderMapper.selectByOrderNo(orderNo);
@@ -231,6 +247,96 @@ public class OrderServiceImpl implements IOrderService {
 		record.setUserId(22);
 		payInfoMapper.insertSelective(record) ;
 		return ServerResponse.createBySuccess();
+	}
+	
+	@Transactional
+	public ServerResponse createOrder(Integer userId,Integer shippingId){
+		userId =21 ;
+		List<MmallCart> carts = cartMapper.listByUserIdSelected(userId);
+		if (CollectionUtils.isEmpty(carts)) {
+			return ServerResponse.createByErrorMessage("创建订单失败，选中的购物车为空") ;
+		}
+		long orderNo = createOrderNo() ;
+		MmallOrder order = new MmallOrder() ;
+		order.setCreateTime(new Date());
+		order.setOrderNo(orderNo);
+		order.setPaymentType(Const.PayPlatform.ALIPAY.getCode());
+		order.setPostage(1); //全场包邮
+		order.setShippingId(shippingId);
+		order.setStatus(OrderEnum.NOT_PAY.getCode());
+		order.setUpdateTime(new Date());
+		order.setUserId(userId);
+		ServerResponse<List<MmallOrderItem>>  response =assembleOrderItem(userId, carts, orderNo) ;
+		if (!response.isSuccess()) {
+			return response ;
+		} 
+		//java8 精确的求和运算
+		BigDecimal totalPayment =  response.getData().stream().map(
+	    		(e) -> e.getTotalPrice()).reduce(BigDecimal.ZERO, BigDecimal::add) ;
+	    order.setPayment(totalPayment);	
+	    //增加订单
+	    int result  = orderMapper.insertSelective(order) ;
+	    if (result != 1) {
+			throw new MmallException("创建订单失败") ;
+		}
+	    //增加订单详情
+	  int totalResult = orderItemMapper.batchInsertOrderItem(response.getData()) ;
+	  if (totalResult != response.getData().size()) {
+		  throw new MmallException("创建订单失败") ;
+	   }
+		
+	    OrderVo vo = assembleOrderVo(order, response.getData()) ;
+	    return ServerResponse.createBySuccess(vo) ;
+	}
+	
+	private OrderVo assembleOrderVo(MmallOrder order,List<MmallOrderItem> items){
+		OrderVo orderVo = BeanMapperUtil.map(order, OrderVo.class) ;
+		List<OrderItemVo> orderItemVos = BeanMapperUtil.mapList(items, OrderItemVo.class) ;
+		orderVo.setOrderItemVoList(orderItemVos);
+		return orderVo ;
+	}
+	
+	/**
+	 * 生成订单号
+	 * @return
+	 */
+	private long createOrderNo(){
+		return System.currentTimeMillis()+new Random().nextInt(100) ;
+	}
+	
+	
+	
+	/**
+	 * 组装订单详情信息
+	 * @param userId
+	 * @param carts
+	 * @return
+	 */
+	private ServerResponse assembleOrderItem(Integer userId,List<MmallCart> carts,long orderNo){
+		List<MmallOrderItem> orderItems = Lists.newArrayList() ;
+		for (MmallCart cart : carts) {
+			MmallOrderItem orderItem = new MmallOrderItem() ;
+			MmallProduct product = productMapper.selectByPrimaryKey(cart.getProductId()) ;
+			//判断商品的状态和库存
+			if (Const.ProductStatus.SOLD_OUT.getCode() == product.getStatus()) {
+				return ServerResponse.createByErrorMessage(product.getName()+"已经下架") ;
+			}
+			if (cart.getQuantity() > product.getStock()) {
+				return ServerResponse.createByErrorMessage(product.getName()+"库存不足") ;
+			}
+			orderItem.setCreateTime(new Date());
+			orderItem.setCurrentUnitPrice(product.getPrice());
+			orderItem.setOrderNo(orderNo);
+			orderItem.setProductId(cart.getProductId());
+			orderItem.setProductImage(product.getMainImage());
+			orderItem.setProductName(product.getName());
+			orderItem.setQuantity(cart.getQuantity());
+			orderItem.setTotalPrice(BigDecimalUtil.multiply(product.getPrice(), new BigDecimal(cart.getQuantity().toString())));
+			orderItem.setUpdateTime(new Date());
+			orderItem.setUserId(userId);
+			orderItems.add(orderItem);
+		}
+		return ServerResponse.createBySuccess(orderItems) ;
 	}
 
 }

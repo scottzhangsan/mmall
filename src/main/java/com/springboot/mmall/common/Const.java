@@ -44,9 +44,27 @@ public class Const {
 
 		public String getValue() {
 			return value;
+		}	
+		
+	}
+	
+	public enum ProductStatus{
+		ON_SALE(1,"在售") , SOLD_OUT(2,"下架");
+		int code ;
+		String value ;
+		
+		private ProductStatus(int code, String value) {
+			this.code = code;
+			this.value = value;
 		}
-		
-		
+
+		public int getCode() {
+			return code;
+		}
+
+		public String getValue() {
+			return value;
+		}	
 		
 	}
 	

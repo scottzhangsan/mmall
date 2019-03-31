@@ -24,4 +24,7 @@ public interface MmallCartMapper {
     List<MmallCart> listCartByUser(Integer userId) ;
     
     int deletProductByProductIdAndUser(@Param("userId")Integer userId,@Param("productIds")List<String> productIds) ;
+    //根据用户名查询选中的购物车信息
+    List<MmallCart> listByUserIdSelected(@Param("userId")Integer userId) ;
+
 }

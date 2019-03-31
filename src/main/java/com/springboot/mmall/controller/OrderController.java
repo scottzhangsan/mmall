@@ -96,5 +96,9 @@ public class OrderController {
 		}
 		return Const.AlipayNotify.NOTIFY_FAILURE;
 	}
+	@RequestMapping("/create")
+	public ServerResponse createOrder(HttpSession session,Integer shippingId){
+		return orderService.createOrder(null, shippingId) ;
+	}
 
 }
