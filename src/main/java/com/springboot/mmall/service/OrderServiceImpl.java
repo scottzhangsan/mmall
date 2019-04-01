@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,9 @@ import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.springboot.mmall.Exception.MmallException;
@@ -47,8 +51,11 @@ import com.springboot.mmall.util.BeanMapperUtil;
 import com.springboot.mmall.util.BigDecimalUtil;
 import com.springboot.mmall.util.DateUtil;
 import com.springboot.mmall.util.FTPUtil;
+import com.springboot.mmall.util.JsonUtil;
+import com.springboot.mmall.util.RedisUtil;
 import com.springboot.mmall.vo.OrderItemVo;
 import com.springboot.mmall.vo.OrderVo;
+import com.springboot.mmall.vo.ProductOrderItemVo;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -66,9 +73,14 @@ public class OrderServiceImpl implements IOrderService {
 	private MmallCartMapper cartMapper ;
 	@Autowired
 	private MmallProductMapper productMapper ;
+	@Autowired
+	private RedisUtil redisUtil ;
+	@Autowired
+	private StringRedisTemplate  stringRedisTemplate ;
 
 	@Override
 	public ServerResponse<Map<String, String>> pay(Long orderNo, Integer userId) {
+		userId =21 ;
 		Map<String, String> map = Maps.newHashMap();
 		MmallOrder order = orderMapper.selectByOrderNoAndUserId(orderNo, userId);
 		if (order == null) {
@@ -129,7 +141,7 @@ public class OrderServiceImpl implements IOrderService {
 				.setTotalAmount(totalAmount).setOutTradeNo(outTradeNo).setUndiscountableAmount(undiscountableAmount)
 				.setSellerId(sellerId).setBody(body).setOperatorId(operatorId).setStoreId(storeId)
 				.setExtendParams(extendParams).setTimeoutExpress(timeoutExpress)
-				.setNotifyUrl("http://127.0.0.1:9090/order/alipay_callback")// 支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+				//.setNotifyUrl("http://127.0.0.1:9090/order/alipay_callback")// 支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
 				.setGoodsDetailList(goodsDetailList);
 		// 支付宝当面付2.0服务（集成了交易保障接口逻辑）
 		Configs.init("zfbinfo.properties");
@@ -148,9 +160,10 @@ public class OrderServiceImpl implements IOrderService {
 			dumpResponse(response);
 
 			// 需要修改为运行机器上的路径
-			filePath = String.format("C:\\Users\\yzhang98\\Desktop\\qr-%s.png", response.getOutTradeNo());
-			logger.info("filePath:" + filePath);
-			ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
+			filePath = String.format("qr-%s.png", response.getOutTradeNo());
+			String newPath = "C:\\Users\\yzhang98\\Desktop\\"+filePath ;
+			logger.info("filePath:" + newPath);
+			ZxingUtils.getQRCodeImge(response.getQrCode(), 256, newPath);
 			File file = new File(filePath);
 			try {
 				// 上传到文件服务器
@@ -189,6 +202,7 @@ public class OrderServiceImpl implements IOrderService {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ServerResponse queryOrderPayStatus(Long orderNo, Integer userId) {
 		MmallOrder order = orderMapper.selectByOrderNoAndUserId(orderNo, userId);
@@ -249,6 +263,7 @@ public class OrderServiceImpl implements IOrderService {
 		return ServerResponse.createBySuccess();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Transactional
 	public ServerResponse createOrder(Integer userId,Integer shippingId){
 		userId =21 ;
@@ -270,10 +285,13 @@ public class OrderServiceImpl implements IOrderService {
 		if (!response.isSuccess()) {
 			return response ;
 		} 
-		//java8 精确的求和运算
+		//java8 精确的求和运算,先转换为String 的构造函数在进行精确的计算
 		BigDecimal totalPayment =  response.getData().stream().map(
-	    		(e) -> e.getTotalPrice()).reduce(BigDecimal.ZERO, BigDecimal::add) ;
-	    order.setPayment(totalPayment);	
+	    		(e) ->{	
+	    		return new BigDecimal(e.getCurrentUnitPrice().toString());}
+				).reduce(BigDecimal.ZERO, BigDecimal::add) ;
+	   
+		order.setPayment(totalPayment);	
 	    //增加订单
 	    int result  = orderMapper.insertSelective(order) ;
 	    if (result != 1) {
@@ -337,6 +355,32 @@ public class OrderServiceImpl implements IOrderService {
 			orderItems.add(orderItem);
 		}
 		return ServerResponse.createBySuccess(orderItems) ;
+	}
+	
+	public ServerResponse<ProductOrderItemVo> getProductOrderItem(Long orderNo){
+		ProductOrderItemVo vo = orderMapper.getOrderProductInfo(orderNo);
+		if (vo == null ) {
+			return ServerResponse.createByErrorMessage("没有此订单") ;
+		}
+		
+		return ServerResponse.createBySuccess(vo) ;
+	}
+	
+	public  ServerResponse<PageInfo<OrderVo>> listByPage(Integer pageSize,Integer pageNum){
+		PageHelper.startPage(pageNum, pageSize);
+		List<OrderVo> list =orderMapper.listOrder() ;
+		//PageInfo<OrderVo> pageInfo = new PageInfo<>(list);
+		
+		for (OrderVo orderVo : list) {
+			orderVo.setOrderItemVoList(orderItemMapper.listByOrderNo(orderVo.getOrderNo()));
+		} 
+		PageInfo<OrderVo> vo =new PageInfo<>(list);
+	   stringRedisTemplate.opsForValue().set("test123", JsonUtil.object2String(vo));
+	   
+	   PageInfo<OrderVo> vos = JsonUtil.json2Object(stringRedisTemplate.opsForValue().get("test123"), new TypeReference<PageInfo<OrderVo>>() {
+	}) ;
+		return  ServerResponse.createBySuccess(vos) ;
+		
 	}
 
 }

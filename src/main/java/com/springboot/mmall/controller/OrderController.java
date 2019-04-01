@@ -10,15 +10,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.demo.trade.config.Configs;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.springboot.mmall.common.Const;
 import com.springboot.mmall.common.ServerResponse;
 import com.springboot.mmall.service.IOrderService;
+import com.springboot.mmall.vo.OrderVo;
+import com.springboot.mmall.vo.ProductOrderItemVo;
 
 @RestController
 @RequestMapping("/order")
@@ -96,9 +100,25 @@ public class OrderController {
 		}
 		return Const.AlipayNotify.NOTIFY_FAILURE;
 	}
+	/**创建订单
+	 * 
+	 * @param session
+	 * @param shippingId
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/create")
 	public ServerResponse createOrder(HttpSession session,Integer shippingId){
 		return orderService.createOrder(null, shippingId) ;
+	}
+	
+	@RequestMapping("/get_order_cart_product")
+	public ServerResponse<ProductOrderItemVo> getProductOrderItem(Long orderNo,HttpSession session){
+		return orderService.getProductOrderItem(orderNo);
+	}
+	@RequestMapping("/list")
+	public ServerResponse<PageInfo<OrderVo>> listOrder(HttpSession session,@RequestParam(value="pageSize",defaultValue="10")Integer pageSize,@RequestParam(value="pageNum",defaultValue="1")Integer pageNum){
+		return orderService.listByPage(pageSize, pageNum) ;
 	}
 
 }

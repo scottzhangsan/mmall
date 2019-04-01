@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.springboot.mmall.pojo.MmallOrderItem;
+import com.springboot.mmall.vo.OrderItemVo;
 
 public interface MmallOrderItemMapper {
     int deleteByPrimaryKey(Integer id);
@@ -22,5 +23,7 @@ public interface MmallOrderItemMapper {
     List<MmallOrderItem> listOrderItemByOrderNoAndUserId(@Param("orderNo")Long orderNo,@Param("userId")Integer userId) ;
     //批量插入订单详情
     int batchInsertOrderItem(List<MmallOrderItem> items) ;
+    
+    List<OrderItemVo> listByOrderNo(Long orderNo) ;
 
 }

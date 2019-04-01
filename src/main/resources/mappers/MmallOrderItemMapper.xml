@@ -181,6 +181,22 @@
       #{item.currentUnitPrice,jdbcType=DECIMAL}, #{item.quantity,jdbcType=INTEGER}, #{item.totalPrice,jdbcType=DECIMAL}, 
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP})
     </foreach>
-    
   </insert>
+  
+  <resultMap id="BaseResultMap4Vo" type="com.springboot.mmall.vo.OrderItemVo" >
+    <result column="order_no" property="orderNo" jdbcType="BIGINT" />
+    <result column="product_id" property="productId" jdbcType="INTEGER" />
+    <result column="product_name" property="productName" jdbcType="VARCHAR" />
+    <result column="product_image" property="productImage" jdbcType="VARCHAR" />
+    <result column="current_unit_price" property="currentUnitPrice" jdbcType="DECIMAL" />
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="total_price" property="totalPrice" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <select id="listByOrderNo" parameterType="java.lang.Long" resultMap="BaseResultMap4Vo">
+  select 
+    <include refid="Base_Column_List" />
+    from mmall_order_item
+    where order_no =#{orderNo} 
+  </select>
 </mapper>

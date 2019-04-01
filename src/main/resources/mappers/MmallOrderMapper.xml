@@ -209,4 +209,41 @@
     from mmall_order
     where order_no = #{orderNo,jdbcType=BIGINT} 
   </select>
+  
+  <resultMap type="com.springboot.mmall.vo.ProductOrderItemVo" id="OrderItemResultMap">
+  <result  column="payment" property="productTotalPrice" jdbcType="BIGINT"/>
+  <collection property="orderItemVoList" ofType="com.springboot.mmall.vo.OrderItemVo">
+ <result column="product_name" property="productName" jdbcType="VARCHAR" />
+   <result column="order_no" property="orderNo" jdbcType="BIGINT" />
+    <result column="product_id" property="productId" jdbcType="INTEGER" />
+    <result column="product_image" property="productImage" jdbcType="VARCHAR" />
+    <result column="current_unit_price" property="currentUnitPrice" jdbcType="DECIMAL" />
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="total_price" property="totalPrice" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </collection>
+  </resultMap>
+  <select id="getOrderProductInfo" resultMap ="OrderItemResultMap">
+	select a.id,a.payment,b.*  from mmall_order a left join
+	mmall_order_item b on a.order_no=b.order_no
+	where a.order_no=#{orderNo}
+  </select>
+  
+   <resultMap id="ResultMap4Vo" type="com.springboot.mmall.vo.OrderVo" >
+    <result column="order_no" property="orderNo" jdbcType="BIGINT" />
+    <result column="payment" property="payment" jdbcType="DECIMAL" />
+    <result column="payment_type" property="paymentType" jdbcType="INTEGER" />
+    <result column="postage" property="postage" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="payment_time" property="paymentTime" jdbcType="TIMESTAMP" />
+    <result column="send_time" property="sendTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="close_time" property="closeTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <select id="listOrder" resultMap="ResultMap4Vo" >
+    select 
+    <include refid="Base_Column_List" />
+    from mmall_order
+  </select>
 </mapper>

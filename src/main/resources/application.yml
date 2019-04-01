@@ -13,11 +13,11 @@ spring:
     multipart:
       max-file-size: 10Mb  # 最大支持文件大小
       max-request-size: 10Mb #最大支持请求大小
- # redis:
-  #  database: 0
-  #  host: 192.168.74.128
-   # port: 6379
-   # password: 123456
+  redis:
+    database: 0
+    host: 192.168.74.128
+    port: 6379
+    password: 123456
  
 mybatis:
   typeAliasesPackage: com.springboot.mmall.pojo

@@ -1,8 +1,12 @@
 package com.springboot.mmall.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.springboot.mmall.pojo.MmallOrder;
+import com.springboot.mmall.vo.OrderVo;
+import com.springboot.mmall.vo.ProductOrderItemVo;
 
 public interface MmallOrderMapper {
     int deleteByPrimaryKey(Integer id);
@@ -20,4 +24,8 @@ public interface MmallOrderMapper {
     MmallOrder selectByOrderNoAndUserId(@Param("orderNo")Long orderNo,@Param("userId")Integer userId);
     //通过订单号查询订单
     MmallOrder selectByOrderNo(Long order) ;
+    
+    ProductOrderItemVo getOrderProductInfo(Long orderNo) ;
+    
+    List<OrderVo> listOrder();
 }

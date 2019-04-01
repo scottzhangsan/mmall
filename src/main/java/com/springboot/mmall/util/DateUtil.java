@@ -19,17 +19,27 @@ public class DateUtil {
 	
 	private static String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	
+	private static DateFormat dateFormat = new SimpleDateFormat(DEFAULT_FORMAT);
+	
 	
 	
 	public static Date str2Date(String value,String format){
-		String pattern ="" ;
-		DateFormat dateFormat = new SimpleDateFormat(pattern = format==null?DEFAULT_FORMAT:format) ;
+		if (format != null ) {
+			dateFormat = new SimpleDateFormat(format) ;
+		}
 		try {
 			return dateFormat.parse(value) ;
 		} catch (ParseException e) {
 			logger.error("时间转换错误",e);
 			return null ;
 		}
+	}
+	
+	public static String date2String(Date value,String format){
+		if (format != null) {
+			dateFormat = new SimpleDateFormat(format) ;
+		}
+		return dateFormat.format(value);
 	}
 
 }

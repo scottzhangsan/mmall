@@ -2,8 +2,10 @@ package com.springboot.mmall.service;
 
 import java.util.Map;
 
+import com.github.pagehelper.PageInfo;
 import com.springboot.mmall.common.ServerResponse;
 import com.springboot.mmall.vo.OrderVo;
+import com.springboot.mmall.vo.ProductOrderItemVo;
 
 public interface IOrderService {
 	
@@ -15,6 +17,10 @@ public interface IOrderService {
 	ServerResponse<String> saveAlipayInfo(Map<String, String> map)  ;
 	
 	ServerResponse createOrder(Integer userId,Integer shippingId) ;
+	
+	ServerResponse<ProductOrderItemVo> getProductOrderItem(Long orderNo) ;
+	
+	ServerResponse<PageInfo<OrderVo>> listByPage(Integer pageSize,Integer pageNum) ;
 	
 	
 
