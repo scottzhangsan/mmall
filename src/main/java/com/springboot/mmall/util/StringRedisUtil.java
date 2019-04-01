@@ -91,6 +91,7 @@ public class StringRedisUtil {
 	 * ，可以批量删除多个key
 	 * @param strings
 	 */
+	@SuppressWarnings("unchecked")
 	public void deleteKey(String ...strings ){
 		if (strings != null && strings.length >0) {
 			if (strings.length==1) {

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class OrderVo implements Serializable{
 
 	private Long orderNo;

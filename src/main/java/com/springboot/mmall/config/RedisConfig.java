@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class RedisConfig extends CachingConfigurerSupport {
 
 	@Bean
-	public CacheManager cacheManager(RedisTemplate redisTemplate) {
+	public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate) {
 		RedisCacheManager rcm = new RedisCacheManager(redisTemplate);
 		return rcm;
 	}
@@ -29,6 +29,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 	 * @param factory
 	 * @return
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
 		RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
