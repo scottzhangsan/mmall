@@ -8,6 +8,12 @@ public class Const {
 	
 	public static final String CURRENT_USER = "currentUser";
 	
+	public static final String MMALL_COOKIE_NAME = "MMALLCOOKIE" ;
+	
+	public static final int COOKIE_EXPIRE_TIEM = 60*30  ;// Cookie存活时间30分钟
+	
+	public static final  long SESSIONID_4_REDIS_EXPIRE_TIME = 60*30;  //redis保存sessionId时间
+	
 	public interface Role{  //运用接口起到分组的效果
 		int ROLE_CUSTOMER = 0 ; //普通用户
 		int ROLE_ADMIN = 1 ; //管理员

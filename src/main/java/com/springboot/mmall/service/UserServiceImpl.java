@@ -25,12 +25,14 @@ public class UserServiceImpl implements IUserService {
 	private MmallUserMapper mmallUserMapper ;
 
 	public ServerResponse<MmallUser> login(String username, String password) {
-		int count = mmallUserMapper.countUserByUsernameAndPassword(username, password);
+		//加密过后的密码
+		String newPassword = MD5Util.getMD5(password);
+		int count = mmallUserMapper.countUserByUsernameAndPassword(username, newPassword);
 		if(count != 1){
 			return ServerResponse.createByErrorMessage("用户名或密码错误") ;
 		}
 		
-		return ServerResponse.createBySuccess(mmallUserMapper.selectMmallUserByNameAndPassword(username, password));
+		return ServerResponse.createBySuccess(mmallUserMapper.selectMmallUserByNameAndPassword(username, newPassword));
 	}
 
 	public ServerResponse<PageInfo<MmallUser>> listMmallUser(int pageNum, int pageSize) {

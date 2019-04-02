@@ -1,5 +1,14 @@
 package com.springboot.mmall.controller;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.type.ReferenceType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeVisitor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +18,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageInfo;
 import com.springboot.mmall.common.Const;
 import com.springboot.mmall.common.ServerResponse;
 import com.springboot.mmall.pojo.MmallUser;
 import com.springboot.mmall.service.IUserService;
+import com.springboot.mmall.util.CookieUtil;
+import com.springboot.mmall.util.JsonUtil;
+import com.springboot.mmall.util.StringRedisUtil;
 import com.springboot.mmall.vo.MmallUserVo;
 
 @Controller
@@ -21,13 +34,17 @@ import com.springboot.mmall.vo.MmallUserVo;
 public class UserController {
 	@Autowired
 	private IUserService userService ;
+	@Autowired
+	private StringRedisUtil redisUtil;
 	@ResponseBody
 	@RequestMapping(value="/login")
-	public ServerResponse<MmallUser> login(String username,String password,HttpSession session){
+	public ServerResponse<MmallUser> login(String username,String password,HttpSession session,HttpServletResponse servletResponse,HttpServletRequest request){
 		ServerResponse<MmallUser> response = userService.login(username, password) ;
 		//如果登录成功才设置Session
 		if (response.isSuccess()) {
-			session.setAttribute(Const.CURRENT_USER, response.getData());
+			//session.setAttribute(Const.CURRENT_USER, response.getData());
+			redisUtil.putKeyWithTime(session.getId(), response.getData(),Const.SESSIONID_4_REDIS_EXPIRE_TIME) ;
+			CookieUtil.addCookie(servletResponse, Const.MMALL_COOKIE_NAME, session.getId(), Const.COOKIE_EXPIRE_TIEM);
 		}
 		
 		return  response;
@@ -51,8 +68,11 @@ public class UserController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="get_user_info")
-	public ServerResponse<MmallUser> getMmuserInfo(HttpSession session){
-		MmallUser user = (MmallUser)session.getAttribute(Const.CURRENT_USER) ;
+	public ServerResponse<MmallUser> getMmuserInfo(HttpSession session,HttpServletRequest request){
+		String sessionId = CookieUtil.getUid(request, Const.MMALL_COOKIE_NAME) ;
+		MmallUser user = JsonUtil.json2Object(redisUtil.getValue(sessionId),MmallUser.class) ;
+		
+		//MmallUser user = (MmallUser)session.getAttribute(Const.CURRENT_USER) ;
 		if (user == null) {
 			return ServerResponse.createByErrorMessage("获取用户信息失败，用户未登陆") ;
 		}

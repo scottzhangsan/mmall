@@ -28,3 +28,8 @@ pagehelper:
   
 upload:
    filePath: c:/upload
+   
+filter:
+  allow:
+     path:
+       - /user/login

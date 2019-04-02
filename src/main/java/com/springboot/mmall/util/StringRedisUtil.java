@@ -71,6 +71,17 @@ public class StringRedisUtil {
 	}
 	
 	/**
+	 * redis获取值得字符串
+	 * @param key
+	 * @return
+	 */
+	public String getValue(String key){
+		String value = redisTemplate.opsForValue().get(key);
+		return value ;
+	}
+	
+	
+	/**
 	 * 保存key值设置有效时间,单位 秒
 	 * @param key
 	 * @param object
