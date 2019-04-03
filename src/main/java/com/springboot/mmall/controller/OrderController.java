@@ -120,5 +120,9 @@ public class OrderController {
 	public ServerResponse<PageInfo<OrderVo>> listOrder(HttpSession session,@RequestParam(value="pageSize",defaultValue="10")Integer pageSize,@RequestParam(value="pageNum",defaultValue="1")Integer pageNum){
 		return orderService.listByPage(pageSize, pageNum) ;
 	}
+	@RequestMapping("/cancel")
+	public ServerResponse<String> cancel(HttpSession session,Long orderNo,HttpServletRequest request){
+		return orderService.cancel(orderNo) ;
+	}
 
 }

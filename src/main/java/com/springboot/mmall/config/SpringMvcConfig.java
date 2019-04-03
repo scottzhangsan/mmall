@@ -12,12 +12,12 @@ public class SpringMvcConfig extends WebMvcConfigurerAdapter {
 	/**
 	 * 注册拦截器,过滤掉登录的路径
 	 */
-	@Autowired
+	/*@Autowired
 	private LoginInterceptor loginInterceptor ;
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(loginInterceptor).addPathPatterns("/user/**").excludePathPatterns("/user/login") ;
-	}
+	}*/
 
 }

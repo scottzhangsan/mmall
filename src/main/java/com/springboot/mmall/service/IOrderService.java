@@ -24,6 +24,8 @@ public interface IOrderService {
 	
 	ServerResponse<PageInfo<OrderVo>> listByPage(Integer pageSize,Integer pageNum) ;
 	
+	ServerResponse<String> cancel(Long orderNo) ;
+	
 	
 
 }

@@ -31,4 +31,12 @@ public interface MmallOrderMapper {
     List<OrderVo> listOrder();
     
     int cancelOrderTimeOrder(@Param("overTime")Date overTime) ;
+    
+    int cancelOrderByOrderNo(@Param("orderNo")Long orderNo,@Param("status")Integer status) ;
+    /**
+     * 查询超时未付款的订单
+     * @param overTime
+     * @return
+     */
+    List<MmallOrder> listOverTimeOrder(@Param("overTime")Date overTime);
 }

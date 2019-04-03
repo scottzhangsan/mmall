@@ -328,6 +328,7 @@ public class OrderServiceImpl implements IOrderService {
 	 * @param carts
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	private ServerResponse assembleOrderItem(Integer userId, List<MmallCart> carts, long orderNo) {
 		List<MmallOrderItem> orderItems = Lists.newArrayList();
 		for (MmallCart cart : carts) {
@@ -352,6 +353,10 @@ public class OrderServiceImpl implements IOrderService {
 			orderItem.setUpdateTime(new Date());
 			orderItem.setUserId(userId);
 			orderItems.add(orderItem);
+			//进行减库存的操作。
+			product.setStock(product.getStock()-cart.getQuantity());
+			product.setUpdateTime(new Date());
+			productMapper.updateByPrimaryKeySelective(product) ;
 		}
 		return ServerResponse.createBySuccess(orderItems);
 	}
@@ -376,6 +381,29 @@ public class OrderServiceImpl implements IOrderService {
 		PageInfo<OrderVo> vo = new PageInfo<>(list);
 		return ServerResponse.createBySuccess(vo);
 
+	}
+
+	@Override
+	@Transactional
+	public ServerResponse<String> cancel(Long orderNo) {
+		//1：修改订单的状态
+		int result = orderMapper.cancelOrderByOrderNo(orderNo,OrderEnum.CANCEL.getCode()) ;
+		//2:增加库存,库存的减少在订单创建的时候，增加也就在订单取消的时候。
+		ProductOrderItemVo orderItemVo = orderMapper.getOrderProductInfo(orderNo);
+		if (CollectionUtils.isNotEmpty(orderItemVo.getOrderItemVoList())) {
+			for (OrderItemVo orItemVo: orderItemVo.getOrderItemVoList()) {
+				MmallProduct record = productMapper.selectByPrimaryKey(orItemVo.getProductId());
+				record.setStock(record.getStock()+orItemVo.getQuantity());
+				record.setUpdateTime(new Date());
+				productMapper.updateByPrimaryKeySelective(record);
+				
+			}
+		}
+		
+		if (result == 1) {
+			return ServerResponse.createBySuccess() ;
+		}
+		return ServerResponse.createByErrorMessage("取消订单失败，没有此订单");
 	}
 
 }

@@ -247,9 +247,20 @@
     from mmall_order
   </select>
   <update id="cancelOrderTimeOrder" parameterType="java.util.Date">
-  
   update mmall_order set status=0 where status=10 and create_time<![CDATA[<]]>#{overTime}
   </update>
+  
+  <update id="cancelOrderByOrderNo" parameterType="java.util.Map">
+  
+  update mmall_order set status=#{status} where order_no=#{orderNo}
+  </update>
+  <!-- 查询超时的未付款的订单 -->
+  <select id="listOverTimeOrder" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List"/>
+    from mmall_order where status=10 and create_time<![CDATA[<]]>#{overTime}
+  </select>
+  
   
   
 </mapper>
