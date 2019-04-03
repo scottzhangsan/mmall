@@ -31,5 +31,5 @@ upload:
    
 filter:
   allow:
-     path:
-       - /user/login
+     path: /user/login ,/user/get_user_info
+        

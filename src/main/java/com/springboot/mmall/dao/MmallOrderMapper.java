@@ -1,5 +1,6 @@
 package com.springboot.mmall.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +29,6 @@ public interface MmallOrderMapper {
     ProductOrderItemVo getOrderProductInfo(Long orderNo) ;
     
     List<OrderVo> listOrder();
+    
+    int cancelOrderTimeOrder(@Param("overTime")Date overTime) ;
 }

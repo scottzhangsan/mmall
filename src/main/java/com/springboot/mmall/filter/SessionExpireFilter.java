@@ -1,6 +1,7 @@
 package com.springboot.mmall.filter;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
 import com.springboot.mmall.common.Const;
 import com.springboot.mmall.pojo.MmallUser;
 import com.springboot.mmall.util.CookieUtil;
@@ -28,8 +31,9 @@ import com.springboot.mmall.util.StringRedisUtil;
 public class SessionExpireFilter implements Filter {
 	
 	private static Logger logger = LoggerFactory.getLogger(SessionExpireFilter.class) ;
-	/*@Value("${filter.allow.path}")
-	private List<String> allowPath ;*/
+	
+	@Value("#{'${filter.allow.path}'.split(',')}")
+	private List<String> allowPath ;    // yml文件注入list集合 ，TODO待使用
 	
 	@Autowired
 	private StringRedisUtil redisUtil ;
@@ -44,6 +48,7 @@ public class SessionExpireFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		logger.info("开始使用过滤器");
+		
 		HttpServletRequest servletRequest = (HttpServletRequest) request ;
 		String sessionId = CookieUtil.getUid(servletRequest, Const.MMALL_COOKIE_NAME) ;
 		if (StringUtils.isNotBlank(sessionId)) {

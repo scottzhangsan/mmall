@@ -14,6 +14,11 @@ public class Const {
 	
 	public static final  long SESSIONID_4_REDIS_EXPIRE_TIME = 60*30;  //redis保存sessionId时间
 	
+	public static final long LIMIT_OVER_TIEM_ORDER = 1000*60*30 ;  //超过30分钟未付款的订单进行取消
+	
+	public static final String MMALL_REDISSON_LOCK_NAME = "MMALL_REDISSON_LOCK" ;
+	
+	
 	public interface Role{  //运用接口起到分组的效果
 		int ROLE_CUSTOMER = 0 ; //普通用户
 		int ROLE_ADMIN = 1 ; //管理员
