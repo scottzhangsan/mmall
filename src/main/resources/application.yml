@@ -32,4 +32,30 @@ upload:
 filter:
   allow:
      path: /user/login ,/user/get_user_info
+     
+# yml基本语法的学习，按照空格的层级来控制层级的关系，只要是左对齐的一列数据都是同一层级的，字符串默认不用加上单引号和双引号
+# 双引号不会转义特殊字符，特殊字符会作为本身想表示的意思。列如 name : zhangsan \n lisi 输出 zhangsan 换行 lisi
+# 单引号会转义特殊字符，特殊字符会显示一个普通的字符串。
+# 对象表示如下
+person:
+  lastname: zhangsan
+  age: 20
+  maps: {name: scott,password: root}
+  lists:
+   - cat
+   - dog
+   - pig
+#行内写法
+friends01: {lastname: zhangsan,age: 18}
+
+#数组（list，set）,用 -空格 值表示数组中的元素
+
+pets:
+  - cat
+  - dog
+  - pig
+#数组的行内写法
+pets01: [cat,dog,pig]
+
+
         

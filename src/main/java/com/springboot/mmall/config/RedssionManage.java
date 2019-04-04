@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @author yzhang98
  *
  */
-@Configuration	
+//@Configuration	
 public class RedssionManage {
 	@Value("${spring.redis.host}")
 	private String redisIp ;

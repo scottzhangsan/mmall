@@ -25,7 +25,7 @@ import com.springboot.mmall.vo.ProductOrderItemVo;
  * @author yzhang98
  *
  */
-@Component
+//@Component
 public class CancelOverTimeOrderTask {
 	
 	private Logger logger = LoggerFactory.getLogger(CancelOverTimeOrderTask.class) ;
