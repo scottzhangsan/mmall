@@ -164,6 +164,13 @@
 			<artifactId>redisson</artifactId>
 			<version>2.15.2</version>
 		</dependency>
+		
+		<!-- 邮件服务 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>mmall</finalName>

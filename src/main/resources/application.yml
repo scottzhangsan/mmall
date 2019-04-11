@@ -18,6 +18,11 @@ spring:
     host: 192.168.74.128
     port: 6379
     password: 123456
+  mail: 
+    host: smtp.163.com
+    username: 15837192793@163.com
+    password: 1689abc
+    default-encoding: UTF-8
  
 mybatis:
   typeAliasesPackage: com.springboot.mmall.pojo
@@ -56,6 +61,10 @@ pets:
   - pig
 #数组的行内写法
 pets01: [cat,dog,pig]
+
+mail:
+  fromMail:
+    addr: 15837192793@163.com
 
 
         
