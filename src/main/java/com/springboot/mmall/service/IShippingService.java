@@ -12,5 +12,7 @@ public interface IShippingService {
 	ServerResponse<String> delete(Integer shipping,Integer userId) ;
 	
 	ServerResponse<String> update(MmallShipping shipping,Integer userId) ;
+	
+	void updateUserId(Integer id) ;
 
 }

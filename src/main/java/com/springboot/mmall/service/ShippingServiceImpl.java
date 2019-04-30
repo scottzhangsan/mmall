@@ -57,5 +57,12 @@ public class ShippingServiceImpl implements IShippingService{
 		}
 		return ServerResponse.createByErrorMessage("更新收货地址失败");
 	}
+	
+	@Transactional
+	public  void updateUserId(Integer id){
+		MmallShipping shipping = shippingMapper.selectByPrimaryKey(id);
+		shipping.setUserId(shipping.getUserId()+1);
+		shippingMapper.updateByPrimaryKey(shipping) ;
+	}
 
 }

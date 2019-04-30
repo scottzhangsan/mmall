@@ -8,8 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan(basePackages = {"com.springboot.mmall.dao"}) //需要扫描的mapper地址
-@EnableCaching
+@MapperScan(basePackages = {"com.springboot.mmall.dao"}) //需要扫描的mapper地址@EnableCaching
 @ServletComponentScan
 @EnableScheduling
 public class MmallApplication {

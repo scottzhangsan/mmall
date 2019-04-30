@@ -15,7 +15,7 @@ spring:
       max-request-size: 10Mb #最大支持请求大小
   redis:
     database: 0
-    host: 192.168.74.128
+    host: 192.168.74.129
     port: 6379
     password: 123456
   mail: 
@@ -23,6 +23,11 @@ spring:
     username: 15837192793@163.com
     password: 1689abc
     default-encoding: UTF-8
+  rabbitmq:
+    host: 192.168.74.129
+    port: 5672
+    username: admin
+    password: 123456
  
 mybatis:
   typeAliasesPackage: com.springboot.mmall.pojo
