@@ -18,7 +18,7 @@ public interface IOrderService {
 	ServerResponse<String> saveAlipayInfo(Map<String, String> map)  ;
 	
 	@SuppressWarnings("rawtypes")
-	ServerResponse createOrder(Integer userId,Integer shippingId) ;
+	ServerResponse createOrder(Integer userId,Integer shippingId) throws Exception ;
 	
 	ServerResponse<ProductOrderItemVo> getProductOrderItem(Long orderNo) ;
 	

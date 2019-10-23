@@ -45,8 +45,7 @@ public class UserController {
 			//session.setAttribute(Const.CURRENT_USER, response.getData());
 			redisUtil.putKeyWithTime(session.getId(), response.getData(),Const.SESSIONID_4_REDIS_EXPIRE_TIME) ;
 			CookieUtil.addCookie(servletResponse, Const.MMALL_COOKIE_NAME, session.getId(), Const.COOKIE_EXPIRE_TIEM);
-		}
-		
+		}		
 		return  response;
 	}
 	@RequestMapping(value="/logout",method=RequestMethod.GET)

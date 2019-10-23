@@ -11,7 +11,7 @@ public class MQReceive {
 	private static Logger logger = LoggerFactory.getLogger(MQReceive.class);
 	
 	//监听这个queue下的message信息。
-	@RabbitListener(queues=MQconfig.QUEUE)
+	//@RabbitListener(queues=MQconfig.QUEUE)
 	public void receive(String message){
 		logger.info("接受message,{}",message);
 	}

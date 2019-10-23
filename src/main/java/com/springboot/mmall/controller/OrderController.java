@@ -105,10 +105,11 @@ public class OrderController {
 	 * @param session
 	 * @param shippingId
 	 * @return
+	 * @throws Exception 
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/create")
-	public ServerResponse createOrder(HttpSession session,Integer shippingId){
+	public ServerResponse createOrder(HttpSession session,Integer shippingId) throws Exception{
 		return orderService.createOrder(null, shippingId) ;
 	}
 	

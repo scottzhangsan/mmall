@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alipay.api.AlipayResponse;
@@ -32,6 +33,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.springboot.mmall.Exception.MmallException;
 import com.springboot.mmall.common.Const;
 import com.springboot.mmall.common.OrderEnum;
@@ -263,8 +265,8 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Transactional
-	public ServerResponse createOrder(Integer userId, Integer shippingId) {
+	@Transactional(rollbackFor=Exception.class)
+	public ServerResponse createOrder(Integer userId, Integer shippingId) throws Exception {
 		userId = 21;
 		List<MmallCart> carts = cartMapper.listByUserIdSelected(userId);
 		if (CollectionUtils.isEmpty(carts)) {
@@ -291,7 +293,17 @@ public class OrderServiceImpl implements IOrderService {
 
 		order.setPayment(totalPayment);
 		// 增加订单
-		int result = orderMapper.insertSelective(order);
+		int result =0 ;
+		try {
+		 result = orderMapper.insertSelective(order);
+		} catch (Exception e2) {
+			logger.error("下单失败：{}",orderNo);
+			if (e2 instanceof MySQLIntegrityConstraintViolationException) {
+				logger.error("下单失败：{}",e2.getMessage()+orderNo);
+				throw  new RuntimeException() ;
+			}
+		}
+		
 		if (result != 1) {
 			throw new MmallException("创建订单失败");
 		}
@@ -317,7 +329,7 @@ public class OrderServiceImpl implements IOrderService {
 	 * 
 	 * @return
 	 */
-	private long createOrderNo() {
+	private synchronized long createOrderNo() {
 		return System.currentTimeMillis() + new Random().nextInt(100);
 	}
 

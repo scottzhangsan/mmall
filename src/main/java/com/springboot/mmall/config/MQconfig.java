@@ -1,7 +1,11 @@
 package com.springboot.mmall.config;
 
+import java.util.HashMap;
+
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
@@ -42,6 +46,11 @@ public class MQconfig {
 	@Bean
 	public Queue queue(){
 		return new Queue(QUEUE,true) ; //是否做消息的持久化
+	}
+	
+	@Bean
+	public Queue queue1(){
+		return new Queue(QUEUE+"01",true) ; //是否做消息的持久化
 	}
 	
 	@Bean
@@ -116,4 +125,85 @@ public class MQconfig {
 	public Binding fanoutBinding2(){
 		return BindingBuilder.bind(fanoutQueue2()).to(fanoutExchange()) ;
 	}
+	
+	@Bean
+    public Exchange directExchange(){
+    	return new DirectExchange("direct.exchange",true,false);
+    }
+	
+	@Bean
+	public Binding directBinding(){
+		return BindingBuilder.bind(queue1()).to(directExchange()).with("queue01").and(new HashMap<>());
+	}
+	
+	
+	
+	
+	
+	
+	@Bean
+	public Queue topicQueue01(){
+		return new Queue("topicQueue01", true) ;
+	}
+	
+	@Bean
+	public Queue topicQueue02(){
+		return new Queue("topicQueue02",true) ;
+	}
+	
+	@Bean
+	public TopicExchange createTopicExchange(){
+		return new TopicExchange("testTopicExchange") ;
+	}
+	
+	
+	/**
+	 * 1:topicExchange交换机，绑定队列的路由键为test.test
+	 * @return
+	 */
+	@Bean
+	public Binding bindingQueue01(){
+		return BindingBuilder.bind(topicQueue01()).to(createTopicExchange()).with("test.test") ;
+	}
+	/**
+	 * 2:topicExchange交换机，绑定队列的未queue02 ,路由键为test.# 
+	 * #，代表 0个或者多个单词
+	 * @return
+	 */
+	@Bean
+	public Binding bindingQueue02(){
+		return BindingBuilder.bind(topicQueue02()).to(createTopicExchange()).with("test.#") ;
+	}
+	
+	
+	@Bean
+	public Queue fanoutQueue01(){
+		return new Queue("fanoutQueue01", true);
+	}
+	
+	@Bean
+	public Queue fanoutQueue02(){
+		return new Queue("fanoutQueue02", true);
+	}
+	
+	@Bean
+	public FanoutExchange createFanoutExchange(){
+		return new FanoutExchange("testFanoutExchange") ;
+	}
+	
+
+	/**
+	 * fanoutExchange 类型的交换机，绑定queue不需要路由key
+	 * @return
+	 */
+	@Bean
+	public Binding bindingFanoutExchangeWithFanoutQueue01(){
+		return BindingBuilder.bind(fanoutQueue01()).to(createFanoutExchange());
+	}
+	
+	@Bean
+	public Binding bindingFanoutExchangeWithFanoutQueue02(){
+		return BindingBuilder.bind(fanoutQueue02()).to(createFanoutExchange());
+	}
+	
 }
