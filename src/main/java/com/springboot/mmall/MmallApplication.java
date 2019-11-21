@@ -1,3 +1,4 @@
+
 package com.springboot.mmall;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -19,6 +20,7 @@ public class MmallApplication {
 		//我是冲突，请解决，谢谢
 		//你好
 		//我在解决冲突
+		//我是冲突，请解决，谢谢
 		SpringApplication.run(MmallApplication.class, args) ;
 		
 	}
