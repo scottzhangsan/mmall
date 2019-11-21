@@ -185,9 +185,27 @@
 		</dependency>
 		<!-- rabbitMq -->
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		
+		<!-- http获取数据 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.6</version>
+        </dependency>
+
+		<!-- <dependency>
+			<groupId>com.abrahamcaijin.commonutil</groupId>
+			<artifactId>CommonUtil</artifactId>
+			<version>1.0.2</version>
+		</dependency> -->
 	</dependencies>
 	<build>
 		<finalName>mmall</finalName>
