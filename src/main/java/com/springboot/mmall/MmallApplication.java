@@ -16,6 +16,9 @@ public class MmallApplication {
 	
 	
 	public static void main(String[] args) {
+		//我是冲突，请解决，谢谢
+		//你好
+		//我在解决冲突
 		SpringApplication.run(MmallApplication.class, args) ;
 		
 	}
