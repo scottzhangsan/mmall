@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MmallApplication {
 	
 	public static void main(String[] args) {
+		//我是冲突，谢谢，请解决
 		SpringApplication.run(MmallApplication.class, args) ;
 	}
 
